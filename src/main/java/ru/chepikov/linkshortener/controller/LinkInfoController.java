@@ -1,6 +1,5 @@
 package ru.chepikov.linkshortener.controller;
 
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,7 +12,7 @@ import ru.chepikov.linkshortener.dto.common.CommonResponse;
 import ru.chepikov.linkshortener.service.LinkInfoService;
 
 import javax.validation.Valid;
-import java.util.UUID;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -37,12 +36,17 @@ public class LinkInfoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResponse<String> deleteShortLinkById(@RequestBody UUID id) {
+    public void deleteShortLinkById(@PathVariable String id) {
         log.info("Поступил запрос на удаление короткой ссылки по id: {}", id);
         service.deleteById(id);
+    }
 
-        return CommonResponse.<String>builder()
-                .body("Удаление ссылки по id " + id)
+    @GetMapping("/all")
+    public CommonResponse<List<CreateShortLinkResponse>> getAll() {
+        log.info("Поступил запрос на получение всех имеющихся коротких ссылок");
+
+        return CommonResponse.<List<CreateShortLinkResponse>>builder()
+                .body(service.findAll())
                 .build();
     }
 }

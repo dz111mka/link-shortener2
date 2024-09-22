@@ -25,8 +25,14 @@ public class LinkInfoRepositoryImpl implements LinkInfoRepository {
     }
 
     @Override
-    public void deleteShortLinkById(String shortLink) {
-        storage.remove(shortLink);
+    public void deleteShortLinkById(String id) {
+        for (Map.Entry<String, LinkInfo> it : storage.entrySet()) {
+            if (id.equals(it.getValue().getId().toString())) {
+                String key = it.getKey();
+                storage.remove(key);
+                return;
+            }
+        }
     }
 
     @Override

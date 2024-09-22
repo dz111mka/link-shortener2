@@ -11,7 +11,7 @@ public interface LinkInfoRepository {
 
     LinkInfo saveShortLink(LinkInfo linkInfo);
 
-    void deleteShortLinkById(String shortLink);
+    void deleteShortLinkById(String id);
 
     List<LinkInfo> findAllShortLink();
 }

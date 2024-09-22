@@ -32,6 +32,5 @@ public class LoggingFilter extends HttpFilter {
         } finally {
             responseWrapper.copyBodyToResponse();
         }
-
     }
 }

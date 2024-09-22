@@ -4,7 +4,7 @@ import ru.chepikov.linkshortener.dto.CreateShortLinkRequest;
 import ru.chepikov.linkshortener.dto.CreateShortLinkResponse;
 import ru.chepikov.linkshortener.model.LinkInfo;
 
-import java.util.UUID;
+import java.util.List;
 
 public interface LinkInfoService {
 
@@ -12,5 +12,7 @@ public interface LinkInfoService {
 
     LinkInfo getByShortLink(String shortLink);
 
-    void deleteById(UUID id);
+    void deleteById(String id);
+
+    List<CreateShortLinkResponse> findAll();
 }

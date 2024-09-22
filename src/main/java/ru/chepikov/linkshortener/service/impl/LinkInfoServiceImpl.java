@@ -15,6 +15,9 @@ import ru.chepikov.linkshortener.property.LinkShortenerProperty;
 import ru.chepikov.linkshortener.repository.LinkInfoRepository;
 import ru.chepikov.linkshortener.service.LinkInfoService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -47,7 +50,17 @@ public class LinkInfoServiceImpl implements LinkInfoService {
     }
 
     @LogExecutionTime
-    public void deleteById(String shortLink) {
-        repository.deleteShortLinkById(shortLink);
+    public void deleteById(String id) {
+        repository.deleteShortLinkById(id);
+    }
+
+    @LogExecutionTime
+    public List<CreateShortLinkResponse> findAll() {
+        List<LinkInfo> allShortLink = repository.findAllShortLink();
+        List<CreateShortLinkResponse> result = new ArrayList<>();
+        for (LinkInfo it : allShortLink) {
+            result.add(mapper.fromLinkInfo(it));
+        }
+        return result;
     }
 }
