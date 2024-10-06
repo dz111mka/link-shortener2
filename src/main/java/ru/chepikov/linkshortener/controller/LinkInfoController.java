@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.chepikov.linkshortener.dto.CreateShortLinkRequest;
 import ru.chepikov.linkshortener.dto.FilterLinkInfoRequest;
 import ru.chepikov.linkshortener.dto.LinkInfoResponse;
+import ru.chepikov.linkshortener.dto.UpdateLinkInfoRequest;
 import ru.chepikov.linkshortener.dto.common.CommonRequest;
 import ru.chepikov.linkshortener.dto.common.CommonResponse;
 import ru.chepikov.linkshortener.service.LinkInfoService;
@@ -50,5 +51,15 @@ public class LinkInfoController {
     public void deleteShortLinkById(@PathVariable UUID id) {
         log.info("Поступил запрос на удаление короткой ссылки по id: {}", id);
         service.deleteById(id);
+    }
+
+    @PatchMapping
+    public CommonResponse<LinkInfoResponse> update(
+            @RequestBody @Valid CommonRequest<UpdateLinkInfoRequest> request) {
+        LinkInfoResponse linkInfoResponses = service.updateById(request.getBody());
+
+        return CommonResponse.<LinkInfoResponse>builder()
+                .body(linkInfoResponses)
+                .build();
     }
 }

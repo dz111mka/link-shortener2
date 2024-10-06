@@ -3,6 +3,7 @@ package ru.chepikov.linkshortener.service;
 import ru.chepikov.linkshortener.dto.CreateShortLinkRequest;
 import ru.chepikov.linkshortener.dto.FilterLinkInfoRequest;
 import ru.chepikov.linkshortener.dto.LinkInfoResponse;
+import ru.chepikov.linkshortener.dto.UpdateLinkInfoRequest;
 import ru.chepikov.linkshortener.model.LinkInfo;
 
 import java.util.List;
@@ -18,6 +19,5 @@ public interface LinkInfoService {
 
     List<LinkInfoResponse> findByFilter(FilterLinkInfoRequest request);
 
-    LinkInfoResponse updateByShortLink(CreateShortLinkRequest request);
-
+    LinkInfoResponse updateById(UpdateLinkInfoRequest request);
 }
