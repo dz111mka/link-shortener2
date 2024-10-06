@@ -6,13 +6,15 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.chepikov.linkshortener.dto.CreateShortLinkRequest;
-import ru.chepikov.linkshortener.dto.CreateShortLinkResponse;
+import ru.chepikov.linkshortener.dto.FilterLinkInfoRequest;
+import ru.chepikov.linkshortener.dto.LinkInfoResponse;
 import ru.chepikov.linkshortener.dto.common.CommonRequest;
 import ru.chepikov.linkshortener.dto.common.CommonResponse;
 import ru.chepikov.linkshortener.service.LinkInfoService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -24,29 +26,29 @@ public class LinkInfoController {
     LinkInfoService service;
 
     @PostMapping("/")
-    public CommonResponse<CreateShortLinkResponse> postCreateShortLink(
+    public CommonResponse<LinkInfoResponse> postCreateShortLink(
             @RequestBody @Valid CommonRequest<CreateShortLinkRequest> request) {
         log.info("Поступил запрос на создание короткой ссылки: {}", request);
 
-        CreateShortLinkResponse createShortLinkResponse = service.createLinkInfo(request.getBody());
+        LinkInfoResponse createShortLinkResponse = service.createLinkInfo(request.getBody());
 
-        return CommonResponse.<CreateShortLinkResponse>builder()
+        return CommonResponse.<LinkInfoResponse>builder()
                 .body(createShortLinkResponse)
                 .build();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteShortLinkById(@PathVariable String id) {
-        log.info("Поступил запрос на удаление короткой ссылки по id: {}", id);
-        service.deleteById(id);
-    }
-
-    @GetMapping("/all")
-    public CommonResponse<List<CreateShortLinkResponse>> getAll() {
+    @PostMapping("/filter")
+    public CommonResponse<List<LinkInfoResponse>> filter(@RequestBody @Valid CommonRequest<FilterLinkInfoRequest> request) {
         log.info("Поступил запрос на получение всех имеющихся коротких ссылок");
 
-        return CommonResponse.<List<CreateShortLinkResponse>>builder()
-                .body(service.findAll())
+        return CommonResponse.<List<LinkInfoResponse>>builder()
+                .body(service.findByFilter(request.getBody()))
                 .build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteShortLinkById(@PathVariable UUID id) {
+        log.info("Поступил запрос на удаление короткой ссылки по id: {}", id);
+        service.deleteById(id);
     }
 }

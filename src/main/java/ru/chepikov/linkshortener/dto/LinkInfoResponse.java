@@ -13,13 +13,12 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateShortLinkResponse {
-
+public class LinkInfoResponse {
     UUID id;
     String link;
     ZonedDateTime endTime;
     String description;
     Boolean active;
     String shortLink;
-
+    Long openingCount;
 }

@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: 01.create_link_info.sql
+      relativeToChangelogFile: true

@@ -7,7 +7,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import ru.chepikov.linkshortener.beanpostprocessor.LogExecutionTime;
 import ru.chepikov.linkshortener.dto.CreateShortLinkRequest;
-import ru.chepikov.linkshortener.dto.CreateShortLinkResponse;
+import ru.chepikov.linkshortener.dto.FilterLinkInfoRequest;
+import ru.chepikov.linkshortener.dto.LinkInfoResponse;
 import ru.chepikov.linkshortener.exception.NotFoundException;
 import ru.chepikov.linkshortener.mapper.LinkInfoMapper;
 import ru.chepikov.linkshortener.model.LinkInfo;
@@ -15,8 +16,8 @@ import ru.chepikov.linkshortener.property.LinkShortenerProperty;
 import ru.chepikov.linkshortener.repository.LinkInfoRepository;
 import ru.chepikov.linkshortener.service.LinkInfoService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -31,36 +32,48 @@ public class LinkInfoServiceImpl implements LinkInfoService {
     LinkInfoMapper mapper;
 
     @LogExecutionTime
-    public CreateShortLinkResponse createLinkInfo(CreateShortLinkRequest request) {
+    public LinkInfoResponse createLinkInfo(CreateShortLinkRequest request) {
         LinkInfo linkInfo = mapper.fromCreateRequest(request);
 
         linkInfo.setShortLink(RandomStringUtils.randomAlphanumeric(property.getShortLinkLength()));
         linkInfo.setOpeningCount(0L);
 
-        repository.saveShortLink(linkInfo);
+        repository.save(linkInfo);
 
-        return mapper.fromLinkInfo(linkInfo);
+        return mapper.toResponse(linkInfo);
     }
 
     @LogExecutionTime
     public LinkInfo getByShortLink(String shortLink) {
-        return repository.findByShortLink(shortLink).orElseThrow(
-                () -> new NotFoundException("Не найдена короткая ссылка")
-        );
+        LinkInfo linkInfo = repository.findByShortLinkAndActiveTrue(shortLink)
+                .orElseThrow(() -> new NotFoundException("Не удалось найти длинную ссылку по короткой " + shortLink));
+
+        repository.incrementOpeningCountByShortLink(shortLink);
+        return linkInfo;
+    }
+
+    @Override
+    public LinkInfo updateByShortLink(String shortLink) {
+        return null;
     }
 
     @LogExecutionTime
-    public void deleteById(String id) {
-        repository.deleteShortLinkById(id);
+    public void deleteById(UUID id) {
+        repository.deleteById(id);
     }
 
     @LogExecutionTime
-    public List<CreateShortLinkResponse> findAll() {
-        List<LinkInfo> allShortLink = repository.findAllShortLink();
-        List<CreateShortLinkResponse> result = new ArrayList<>();
-        for (LinkInfo it : allShortLink) {
-            result.add(mapper.fromLinkInfo(it));
-        }
-        return result;
+    public List<LinkInfoResponse> findByFilter(FilterLinkInfoRequest filterRequest) {
+
+
+        return repository.findByFilter(
+                        filterRequest.getLinkPart(),
+                        filterRequest.getEndTimeFrom(),
+                        filterRequest.getEndTimeTo(),
+                        filterRequest.getDescriptionPart(),
+                        filterRequest.getActive())
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 }

@@ -2,7 +2,12 @@ package ru.chepikov.linkshortener.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -11,8 +16,12 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class LinkInfo {
+@Entity
+public class LinkInfo extends AuditableEntity {
 
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     UUID id;
     String link;
     ZonedDateTime endTime;
