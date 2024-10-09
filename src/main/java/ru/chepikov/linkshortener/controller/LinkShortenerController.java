@@ -28,7 +28,7 @@ public class LinkShortenerController {
         log.info("Поступил запрос на открытие длинной ссылки по короткой {}", shortLink);
         LinkInfo linkInfo = linkInfoService.getByShortLink(shortLink);
 
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY)
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
                 .header(HttpHeaders.LOCATION, linkInfo.getLink())
                 .build();
     }

@@ -11,6 +11,7 @@ import ru.chepikov.linkshortener.dto.FilterLinkInfoRequest;
 import ru.chepikov.linkshortener.dto.LinkInfoResponse;
 import ru.chepikov.linkshortener.dto.UpdateLinkInfoRequest;
 import ru.chepikov.linkshortener.exception.NotFoundException;
+import ru.chepikov.linkshortener.exception.NotFoundPageException;
 import ru.chepikov.linkshortener.mapper.LinkInfoMapper;
 import ru.chepikov.linkshortener.model.LinkInfo;
 import ru.chepikov.linkshortener.property.LinkShortenerProperty;
@@ -46,9 +47,11 @@ public class LinkInfoServiceImpl implements LinkInfoService {
     @LogExecutionTime
     public LinkInfo getByShortLink(String shortLink) {
         LinkInfo linkInfo = repository.findByShortLinkAndActiveTrue(shortLink)
-                .orElseThrow(() -> new NotFoundException("Не удалось найти длинную ссылку по короткой " + shortLink));
+                .orElseThrow(() -> new NotFoundPageException(
+                        "LinkInfo с короткой ссылкой {%s} не был найден".formatted(shortLink)));
 
         repository.incrementOpeningCountByShortLink(shortLink);
+
         return linkInfo;
     }
 
