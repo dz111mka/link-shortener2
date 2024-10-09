@@ -49,7 +49,7 @@ public class LinkShortenerExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundPageException.class)
-    public ResponseEntity<String> handleNotFoundPageException(MethodArgumentNotValidException e) {
+    public ResponseEntity<String> handleNotFoundPageException(NotFoundPageException e) {
         log.error(e.getMessage(), e);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
