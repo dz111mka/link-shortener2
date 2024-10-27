@@ -27,6 +27,7 @@ public class LinkShortenerExceptionHandler {
 
     String notFoundPage;
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public CommonResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 
@@ -57,12 +58,12 @@ public class LinkShortenerExceptionHandler {
                 .body(notFoundPage);
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public CommonResponse<?> handleException(Exception e) {
         log.error("непредвиденная ошибка: {}", e.getMessage(), e);
         return CommonResponse.builder()
                 .errorMessage("Непредвиденная ошибка: " + e.getMessage())
                 .build();
-    }
+    }*/
 }

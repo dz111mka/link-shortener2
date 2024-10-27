@@ -2,3 +2,6 @@ databaseChangeLog:
   - include:
       file: 01.create_link_info.sql
       relativeToChangelogFile: true
+  - include:
+      file: 02.create_ind_link_info.sql
+      relativeToChangelogFile: true
